@@ -10,14 +10,20 @@ package org.eclipse.smarthome.io.voice.internal.extensions;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.smarthome.core.items.Item;
 import org.eclipse.smarthome.core.items.ItemNotFoundException;
 import org.eclipse.smarthome.core.items.ItemNotUniqueException;
 import org.eclipse.smarthome.core.items.ItemRegistry;
+import org.eclipse.smarthome.io.audio.AudioSource;
+import org.eclipse.smarthome.io.voice.Voice;
+import org.eclipse.smarthome.io.voice.TTSException;
+import org.eclipse.smarthome.io.audio.AudioFormat;
 import org.eclipse.smarthome.io.console.Console;
 import org.eclipse.smarthome.io.console.extensions.AbstractConsoleCommandExtension;
-import org.eclipse.smarthome.io.voice.tts.TTSService;
+import org.eclipse.smarthome.io.voice.TTSService;
+import org.eclipse.smarthome.io.voice.internal.AudioPlayer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -27,6 +33,7 @@ import org.osgi.framework.ServiceReference;
  * Console command extension to speak text by a text-to-speech service (TTS)
  *
  * @author Tilman Kamp - Initial contribution and API
+ * @author Kelly Davis
  *
  */
 public class SayConsoleCommandExtension extends AbstractConsoleCommandExtension {
@@ -71,8 +78,19 @@ public class SayConsoleCommandExtension extends AbstractConsoleCommandExtension 
             ttsService = getTTSService(context, "any");
         }
         if (ttsService != null) {
-            ttsService.say(msg.toString(), null, null);
-            console.println("Said: " + msg);
+            Set<Voice> voices = ttsService.getAvailableVoices();
+            Set<AudioFormat> audioFormats = ttsService.getSupportedFormats();
+            try {
+                AudioSource audioSource = ttsService.synthesize(msg.toString(), voices.iterator().next(), audioFormats.iterator().next());
+                AudioPlayer audioPlayer = new AudioPlayer(audioSource);
+                audioPlayer.start();
+                audioPlayer.join();
+                console.println("Said: " + msg);
+            } catch(TTSException e) {
+                console.println("TTS service failure - tried to say: '" + msg + "' error: " + e.getMessage());
+            } catch(InterruptedException e) {
+                console.println("TTS service failure - interrupted saying: '" + msg + "' error: " + e.getMessage());
+            }
         } else {
             console.println("No TTS service available - tried to say: " + msg);
         }
