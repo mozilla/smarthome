@@ -21,7 +21,7 @@ public class SpeechRecognitionEventTest {
      */
     @Test
     public void testConstructor() {
-        SpeechRecognitionEvent sRE = new SpeechRecognitionEvent("Message", 0.5);
+        SpeechRecognitionEvent sRE = new SpeechRecognitionEvent("Message", 0.5f);
         Assert.assertNotNull("SpeechRecognitionEvent(String, float) constructor failed", sRE);
     }
 
@@ -30,7 +30,7 @@ public class SpeechRecognitionEventTest {
      */
     @Test
     public void getTranscriptTest() {
-        SpeechRecognitionEvent sRE = new SpeechRecognitionEvent("Message", 0.5);
+        SpeechRecognitionEvent sRE = new SpeechRecognitionEvent("Message", 0.5f);
         Assert.assertEquals("SpeechRecognitionEvent.getTranscript() method failed", "Message", sRE.getTranscript());
     }
 
@@ -39,7 +39,7 @@ public class SpeechRecognitionEventTest {
      */
     @Test
     public void getConfidenceTest() {
-        SpeechRecognitionEvent sRE = new SpeechRecognitionEvent("Message", 0.5);
-        Assert.assertEquals("SpeechRecognitionEvent.getConfidence() method failed", 0.5, sRE.getConfidence());
+        SpeechRecognitionEvent sRE = new SpeechRecognitionEvent("Message", 0.5f);
+        Assert.assertEquals("SpeechRecognitionEvent.getConfidence() method failed", (double) 0.5f, (double) sRE.getConfidence(), (double) 0.001f);
     }
 }
