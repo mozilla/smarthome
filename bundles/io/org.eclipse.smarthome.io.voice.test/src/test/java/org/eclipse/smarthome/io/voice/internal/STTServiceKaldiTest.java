@@ -21,6 +21,7 @@ import org.eclipse.smarthome.io.audio.AudioException;
 import org.eclipse.smarthome.io.audio.AudioFormat;
 import org.eclipse.smarthome.io.audio.AudioSource;
 import org.eclipse.smarthome.io.voice.RecognitionStopEvent;
+import org.eclipse.smarthome.io.voice.SpeechRecognitionErrorEvent;
 import org.eclipse.smarthome.io.voice.SpeechRecognitionEvent;
 import org.eclipse.smarthome.io.voice.STTEvent;
 import org.eclipse.smarthome.io.voice.STTException;
@@ -76,6 +77,10 @@ public class STTServiceKaldiTest {
             }
             if (sttEvent instanceof RecognitionStopEvent) {
                 this.isClosed = true;
+            }
+            if (sttEvent instanceof SpeechRecognitionErrorEvent) {
+                SpeechRecognitionErrorEvent e = (SpeechRecognitionErrorEvent) sttEvent;
+                throw new RuntimeException("Error occured in STT: " + e.getMessage());
             }
         }
 
@@ -159,7 +164,7 @@ public class STTServiceKaldiTest {
        STTServiceKaldi sttServiceKaldi = new STTServiceKaldi();
 
        STTListenerUtility sttListenerUtility = new STTListenerUtility();
-       FileAudioSource fileAudioSource = new FileAudioSource("hello_world.raw");
+       FileAudioSource fileAudioSource = new FileAudioSource("hellowworld.raw");
        Locale locale = new Locale("en", "US");
        HashSet<String> grammars = new HashSet<String>();
 

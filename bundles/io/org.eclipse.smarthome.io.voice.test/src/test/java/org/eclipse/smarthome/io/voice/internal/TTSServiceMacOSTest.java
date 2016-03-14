@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
 
+import  org.eclipse.smarthome.io.audio.AudioException;
 import  org.eclipse.smarthome.io.audio.AudioFormat;
 import  org.eclipse.smarthome.io.audio.AudioSource;
 import  org.eclipse.smarthome.io.voice.TTSException;
@@ -70,6 +71,8 @@ public class TTSServiceMacOSTest {
             Assert.fail("synthesizeTest() failed with TTSException: " + e.getMessage());
         } catch (IOException e) {
             Assert.fail("synthesizeTest() failed with IOException: " + e.getMessage());
+        } catch (AudioException e) {
+            Assert.fail("synthesizeTest() failed with AudioException: " + e.getMessage());
         }
     }
 }
