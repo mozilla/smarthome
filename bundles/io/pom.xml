@@ -36,6 +36,7 @@
     <module>org.eclipse.smarthome.io.transport.upnp</module>
     <module>org.eclipse.smarthome.io.transport.upnp.test</module>
     <module>org.eclipse.smarthome.io.voice</module>
+    <module>org.eclipse.smarthome.io.voice.test</module>
   </modules>
 
 </project>

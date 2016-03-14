@@ -14,6 +14,7 @@ import java.io.InputStream;
 import org.junit.Assert;
 import org.junit.Test;
 
+import  org.eclipse.smarthome.io.audio.AudioException;
 import  org.eclipse.smarthome.io.audio.AudioFormat;
 import  org.eclipse.smarthome.io.audio.AudioSource;
 import  org.eclipse.smarthome.io.voice.TTSException;
@@ -57,12 +58,15 @@ public class TTSServiceMaryTTSTest {
             Assert.assertNotNull("The test synthesizeTest() created an AudioSource w/o AudioFormat", audioSource.getFormat());
             InputStream inputStream = audioSource.getInputStream();
             Assert.assertNotNull("The test synthesizeTest() created an AudioSource w/o InputStream", inputStream);
-            Assert.assertTrue("The test synthesizeTest() returned an AudioSource with no data", (-1 != inputStream.read()));
+            byte[] data = new byte[1024];
+            Assert.assertTrue("The test synthesizeTest() returned an AudioSource with no data", (-1 != inputStream.read(data)));
             inputStream.close();
         } catch (TTSException e) {
             Assert.fail("synthesizeTest() failed with TTSException: " + e.getMessage());
         } catch (IOException e) {
             Assert.fail("synthesizeTest() failed with IOException: " + e.getMessage());
+        } catch (AudioException e) {
+            Assert.fail("synthesizeTest() failed with AudioException: " + e.getMessage());
         }
     }
 }
