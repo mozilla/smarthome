@@ -7,31 +7,34 @@
  */
 package org.eclipse.smarthome.io.voice.internal;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import javax.sound.sampled.TargetDataLine;
 
 /**
- * This is an InputStream from a Microphone 
+ * This is an InputStream from a Microphone
  *
  * @author Kelly Davis - Initial contribution and API
  *
  */
 public class MicrophoneInputStream extends InputStream {
-   /**
-    * TargetDataLine for the mic
-    */
+    /**
+     * TargetDataLine for the mic
+     */
     private final TargetDataLine microphone;
 
-   /**
-    * Constructs a MicrophoneInputStream with the passed microphone
-    *
-    * @param microphone The mic which data is pulled from
-    */
+    /**
+     * Constructs a MicrophoneInputStream with the passed microphone
+     *
+     * @param microphone The mic which data is pulled from
+     */
     public MicrophoneInputStream(TargetDataLine microphone) {
         this.microphone = microphone;
+        this.microphone.start();
     }
 
+    @Override
     public int read() throws IOException {
         byte[] b = new byte[1];
 
@@ -42,17 +45,20 @@ public class MicrophoneInputStream extends InputStream {
         }
 
         Byte bb = new Byte(b[0]);
-        return bb.intValue();     // TODO: Is this the best way to go from byte to int?
+        return bb.intValue(); // TODO: Is this the best way to go from byte to int?
     }
 
+    @Override
     public int read(byte[] b) throws IOException {
         return this.microphone.read(b, 0, b.length);
     }
 
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
         return this.microphone.read(b, off, len);
     }
 
+    @Override
     public void close() throws IOException {
         this.microphone.close();
     }

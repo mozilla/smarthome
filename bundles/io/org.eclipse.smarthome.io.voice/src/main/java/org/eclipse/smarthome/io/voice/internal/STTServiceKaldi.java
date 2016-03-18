@@ -9,20 +9,20 @@ package org.eclipse.smarthome.io.voice.internal;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.Locale;
-
-import ee.ioc.phon.netspeechapi.duplex.WsDuplexRecognitionSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
 import org.eclipse.smarthome.io.audio.AudioFormat;
 import org.eclipse.smarthome.io.audio.AudioSource;
 import org.eclipse.smarthome.io.voice.STTException;
-import org.eclipse.smarthome.io.voice.STTService;
 import org.eclipse.smarthome.io.voice.STTListener;
+import org.eclipse.smarthome.io.voice.STTService;
 import org.eclipse.smarthome.io.voice.STTServiceHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ee.ioc.phon.netspeechapi.duplex.WsDuplexRecognitionSession;
 
 /**
  * This is a STT service implementation using Kaldi.
@@ -34,24 +34,25 @@ public class STTServiceKaldi implements STTService {
 
     private static final Logger logger = LoggerFactory.getLogger(STTServiceKaldi.class);
 
-   /**
-    * WebSocket URL to the head node of the Kaldi server cluster
-    */
+    /**
+     * WebSocket URL to the head node of the Kaldi server cluster
+     */
     private static final String kaldiWebSocketURL = "ws://52.27.131.95:8888/client/ws/speech";
 
     /**
      * Set of supported locales
      */
-     private final HashSet<Locale> locales = initLocales();
+    private final HashSet<Locale> locales = initLocales();
 
     /**
      * Set of supported audio formats
      */
-     private final HashSet<AudioFormat> audioFormats = initAudioFormats();
+    private final HashSet<AudioFormat> audioFormats = initAudioFormats();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<Locale> getSupportedLocales() {
         return this.locales;
     }
@@ -59,6 +60,7 @@ public class STTServiceKaldi implements STTService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<AudioFormat> getSupportedFormats() {
         return this.audioFormats;
     }
@@ -66,7 +68,9 @@ public class STTServiceKaldi implements STTService {
     /**
      * {@inheritDoc}
      */
-    public STTServiceHandle recognize(STTListener sttListener, AudioSource audioSource, Locale locale, Set<String> grammars) throws STTException {
+    @Override
+    public STTServiceHandle recognize(STTListener sttListener, AudioSource audioSource, Locale locale,
+            Set<String> grammars) throws STTException {
         // Validate arguments
         if (null == sttListener) {
             throw new IllegalArgumentException("The passed STTListener is null");
@@ -97,16 +101,17 @@ public class STTServiceKaldi implements STTService {
         WsDuplexRecognitionSession recognitionSession;
         try {
             recognitionSession = new WsDuplexRecognitionSession(kaldiWebSocketURL);
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new STTException("Error connected to the server", e);
-        } catch(URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new STTException("Invalid WebSocket URL", e);
         }
         // One need not call recognitionSession.setContentType(...) [See http://bit.ly/1TGvQzA]
         recognitionSession.addRecognitionEventListener(new RecognitionEventListenerKaldi(sttListener));
 
         // Start recognition
-        STTServiceKaldiRunnable sttServiceKaldiRunnable = new STTServiceKaldiRunnable(recognitionSession, sttListener, audioSource);
+        STTServiceKaldiRunnable sttServiceKaldiRunnable = new STTServiceKaldiRunnable(recognitionSession, sttListener,
+                audioSource);
         Thread thread = new Thread(sttServiceKaldiRunnable);
         thread.start();
 
@@ -119,29 +124,32 @@ public class STTServiceKaldi implements STTService {
      *
      * @return The locales of this instance
      */
-     private final HashSet<Locale> initLocales() {
-         HashSet<Locale> locales = new HashSet<Locale>();
-         locales.add(new Locale("en", "US")); // For now we only support American English
-         return locales;
-     }
+    private final HashSet<Locale> initLocales() {
+        HashSet<Locale> locales = new HashSet<Locale>();
+        locales.add(new Locale("en", "US")); // For now we only support American English
+        return locales;
+    }
 
     /**
      * Initializes this.audioFormats
      *
      * @return The audio formats of this instance
      */
-     private final HashSet<AudioFormat> initAudioFormats() {
-         HashSet<AudioFormat> audioFormats = new HashSet<AudioFormat>();
-         
-          String containers[] = {"NONE", "ASF", "AVI", "DVR-MS", "MKV", "MPEG", "OGG", "QuickTime", "RealMedia", "WAVE"};
-          String codecs[] = {"RAW", "A52", "ADPCM", "FLAC", "GSM", "A-LAW", "MU-LAW", "MP3", "QDM", "SPEEX", "VORBIS", "NIST", "VOC"};
+    private final HashSet<AudioFormat> initAudioFormats() {
+        HashSet<AudioFormat> audioFormats = new HashSet<AudioFormat>();
 
-          for (String container : containers) {
-              for (String codec : codecs) {
-                  audioFormats.add(new AudioFormat(container, codec, null, null, null, null)); // TODO: Allow only valid combinations
-              }
-          }
+        String containers[] = { "NONE", "ASF", "AVI", "DVR-MS", "MKV", "MPEG", "OGG", "QuickTime", "RealMedia",
+                "WAVE" };
+        String codecs[] = { "PCM_SIGNED", "RAW", "A52", "ADPCM", "FLAC", "GSM", "A-LAW", "MU-LAW", "MP3", "QDM",
+                "SPEEX", "VORBIS", "NIST", "VOC" };
 
-         return audioFormats;
-     }
+        for (String container : containers) {
+            for (String codec : codecs) {
+                audioFormats.add(new AudioFormat(container, codec, null, null, null, null)); // TODO: Allow only valid
+                                                                                             // combinations
+            }
+        }
+
+        return audioFormats;
+    }
 }
