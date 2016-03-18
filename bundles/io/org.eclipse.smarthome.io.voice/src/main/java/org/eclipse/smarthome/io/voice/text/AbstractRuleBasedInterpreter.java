@@ -81,15 +81,13 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
         Rule[] rules = getRules(locale);
         if (language == null || rules.length == 0) {
             throw new InterpretationException(
-                locale.getDisplayLanguage(Locale.ENGLISH) + " is not supported at the moment.");
+                    locale.getDisplayLanguage(Locale.ENGLISH) + " is not supported at the moment.");
         }
-        TokenList tokens = new TokenList(Arrays.asList(text.trim().toLowerCase().split("\\s++")));
+        TokenList tokens = new TokenList(Arrays.asList(text.trim().toLowerCase().replaceAll("\\.", "").split("\\s++")));
         if (tokens.eof()) {
             throw new InterpretationException(language.getString(SORRY));
         }
         InterpretationResult result;
-
-        getGrammar(locale, "JSGF");
 
         for (Rule rule : rules) {
             if ((result = rule.execute(language, tokens)).isSuccess()) {
@@ -113,7 +111,7 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
         if (identifierTokens == null) {
             identifierTokens = new HashSet<String>();
             for (Item item : itemRegistry.getAll()) {
-                identifierTokens.addAll(splitName(item.getName(), true));
+                identifierTokens.addAll(splitName(item.getLabel(), true));
             }
         }
         return identifierTokens;
@@ -422,8 +420,12 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
             Item item = items.get(0);
             if (command instanceof State) {
                 State newState = (State) command;
-                State oldState = item.getStateAs(newState.getClass());
-                if (oldState.equals(newState)) {
+                State oldState = null;
+                try {
+                    oldState = item.getStateAs(newState.getClass());
+                } catch (Exception e) {
+                }
+                if (oldState != null && oldState.equals(newState)) {
                     String template = language.getString("state_already_singular");
                     String cmdName = "state_" + command.toString().toLowerCase();
                     String stateText = language.getString(cmdName);
@@ -452,7 +454,7 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
     protected ArrayList<Item> getMatchingItems(String[] nameFragments, Class<?> commandType) {
         ArrayList<Item> items = new ArrayList<Item>();
         for (Item item : itemRegistry.getAll()) {
-            HashSet<String> parts = new HashSet<String>(splitName(item.getName(), true));
+            HashSet<String> parts = new HashSet<String>(splitName(item.getLabel(), true));
             boolean allMatch = true;
             for (String fragment : nameFragments) {
                 allMatch = allMatch && parts.contains(fragment.toLowerCase());
@@ -472,8 +474,11 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
      * @return resulting fragments of the name
      */
     protected ArrayList<String> splitName(String name, boolean toLowerCase) {
-        String[] split = name.split("(?<!^)(?=[A-Z])|_|\\s+");
         ArrayList<String> parts = new ArrayList<String>();
+        if (name == null) {
+            return parts;
+        }
+        String[] split = name.replaceAll("\\.", "").split("(?<!^)(?=[A-Z])|_|\\s+");
         for (int i = 0; i < split.length; i++) {
             String part = split[i].trim();
             if (part.length() > 1) {
