@@ -136,9 +136,11 @@ class KSServiceRunnable implements Runnable {
         try {
             Config c = Decoder.defaultConfig();
             c.setString("-hmm", "/Users/anatal/projects/mozilla/vaani-iot/pocketsphinx/pocketsphinx/model/en-us/en-us");
-            c.setString("-keyphrase", keyword);
+            c.setString("-keyphrase", keyword.toLowerCase());
             c.setString("-dict",
                     "/Users/anatal/projects/mozilla/vaani-iot/pocketsphinx/pocketsphinx/model/en-us/cmudict-en-us.dict");
+            c.setFloat("-kws_threshold", 1e-20);
+
             Decoder d = new Decoder(c);
             InputStream ais = audioSource.getInputStream();
 
