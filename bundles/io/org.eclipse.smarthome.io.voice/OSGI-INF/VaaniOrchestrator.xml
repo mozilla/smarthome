@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2014-2015 openHAB UG (haftungsbeschraenkt) and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+-->
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.smarthome.io.voice.orchestrator">
+   <implementation class="org.eclipse.smarthome.io.voice.internal.VaaniOrchestrator"/>
+   <reference bind="setKSService" cardinality="1..1" interface="org.eclipse.smarthome.io.voice.KSService" name="KSService" policy="static" unbind="unsetKSService"/>
+   <reference bind="setSTTService" cardinality="1..1" interface="org.eclipse.smarthome.io.voice.STTService" name="STTService" policy="static" unbind="unsetSTTService"/>
+   <reference bind="setTTSService" cardinality="1..1" interface="org.eclipse.smarthome.io.voice.TTSService" name="TTSService" policy="static" unbind="unsetTTSService"/>
+   <reference bind="setHumanLanguageInterpreter" cardinality="1..1" interface="org.eclipse.smarthome.io.voice.text.HumanLanguageInterpreter" name="HumanLanguageInterpreter" policy="static" unbind="unsetHumanLanguageInterpreter"/>
+</scr:component>
