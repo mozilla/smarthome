@@ -8,7 +8,6 @@
 package org.eclipse.smarthome.io.voice.text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,20 +80,29 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
         Rule[] rules = getRules(locale);
         if (language == null || rules.length == 0) {
             throw new InterpretationException(
-                    locale.getDisplayLanguage(Locale.ENGLISH) + " is not supported at the moment.");
+                locale.getDisplayLanguage(Locale.ENGLISH) + " is not supported at the moment.");
         }
-        TokenList tokens = new TokenList(Arrays.asList(text.trim().toLowerCase().replaceAll("\\.", "").split("\\s++")));
+        TokenList tokens = new TokenList(tokenize(text));
         if (tokens.eof()) {
             throw new InterpretationException(language.getString(SORRY));
         }
         InterpretationResult result;
 
+        InterpretationResult lastResult = null;
         for (Rule rule : rules) {
             if ((result = rule.execute(language, tokens)).isSuccess()) {
                 return result.getResponse();
+            } else {
+                if (result != InterpretationResult.SYNTAX_ERROR) {
+                    lastResult = result;
+                }
             }
         }
-        throw new InterpretationException(language.getString(SORRY));
+        if (lastResult == null) {
+            throw new InterpretationException(language.getString(SORRY));
+        } else {
+            throw lastResult.getException();
+        }
     }
 
     private void invalidate() {
@@ -239,7 +247,7 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
                 if (name != null && command != null) {
                     try {
                         return new InterpretationResult(true, executeSingle(language, name, command));
-                    } catch (Exception ex) {
+                    } catch (InterpretationException ex) {
                         return new InterpretationResult(ex);
                     }
                 }
@@ -419,17 +427,16 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
         } else {
             Item item = items.get(0);
             if (command instanceof State) {
-                State newState = (State) command;
-                State oldState = null;
                 try {
-                    oldState = item.getStateAs(newState.getClass());
-                } catch (Exception e) {
-                }
-                if (oldState != null && oldState.equals(newState)) {
-                    String template = language.getString("state_already_singular");
-                    String cmdName = "state_" + command.toString().toLowerCase();
-                    String stateText = language.getString(cmdName);
-                    return template.replace("<state>", stateText);
+                    State newState = (State) command;
+                    State oldState = item.getStateAs(newState.getClass());
+                    if (oldState.equals(newState)) {
+                        String template = language.getString("state_already_singular");
+                        String cmdName = "state_" + command.toString().toLowerCase();
+                        String stateText = language.getString(cmdName);
+                        return template.replace("<state>", stateText);
+                    }
+                } catch (Exception ex) {
                 }
             }
             eventPublisher.post(ItemEventFactory.createCommandEvent(item.getName(), command));
@@ -464,6 +471,24 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
             }
         }
         return items;
+    }
+
+    /**
+     * Tokenizes text. Filters out all unsupported punctuation. Tokens will be lower case.
+     *
+     * @param text the text that should be tokenized
+     * @return resulting tokens
+     */
+    protected ArrayList<String> tokenize(String text) {
+        ArrayList<String> parts = new ArrayList<String>();
+        String[] split = text.toLowerCase().replaceAll("[^\\w\\s]", " ").split("\\s");
+        for (int i = 0; i < split.length; i++) {
+            String part = split[i].trim();
+            if (part.length() > 0) {
+                parts.add(part);
+            }
+        }
+        return parts;
     }
 
     /**
@@ -695,6 +720,8 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
                     identifierExcludes.addAll(((ExpressionIdentifier) e).getExcludes());
                 }
             }
+
+            emit("#JSGF V1.0;\n\n");
 
             if (identifierExcludes.size() > 0) {
                 HashSet<String> identifierBase = new HashSet<String>(identifiers);

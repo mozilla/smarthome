@@ -45,7 +45,7 @@ public final class ExpressionIdentifier extends Expression {
         ASTNode node = new ASTNode();
         HashSet<String> tokens = interpreter.getIdentifierTokens();
         String head = list.head();
-        node.setSuccess(tokens.contains(head) && !excludes.contains(head));
+        node.setSuccess(head != null /* && tokens.contains(head) */ && !excludes.contains(head));
         if (node.isSuccess()) {
             node.setRemainingTokens(list.skipHead());
             node.setValue(head);
