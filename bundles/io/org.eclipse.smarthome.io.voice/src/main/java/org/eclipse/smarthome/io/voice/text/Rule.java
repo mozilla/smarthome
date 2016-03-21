@@ -39,7 +39,7 @@ public abstract class Rule {
 
     InterpretationResult execute(ResourceBundle language, TokenList list) {
         ASTNode node = expression.parse(list);
-        if (node.isSuccess()) {
+        if (node.isSuccess() && node.getRemainingTokens().eof()) {
             return interpretAST(language, node);
         }
         return InterpretationResult.SYNTAX_ERROR;

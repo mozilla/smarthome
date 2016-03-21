@@ -31,7 +31,7 @@ public final class InterpretationResult {
     public final static InterpretationResult SEMANTIC_ERROR = new InterpretationResult(false, "Semantic error.");
 
     private boolean success = false;
-    private Exception exception;
+    private InterpretationException exception;
     private String response;
 
     /**
@@ -50,7 +50,7 @@ public final class InterpretationResult {
      *
      * @param exception the responsible exception
      */
-    public InterpretationResult(Exception exception) {
+    public InterpretationResult(InterpretationException exception) {
         super();
         this.exception = exception;
         this.success = false;
@@ -78,7 +78,7 @@ public final class InterpretationResult {
     /**
      * @return the exception
      */
-    public Exception getException() {
+    public InterpretationException getException() {
         return exception;
     }
 
