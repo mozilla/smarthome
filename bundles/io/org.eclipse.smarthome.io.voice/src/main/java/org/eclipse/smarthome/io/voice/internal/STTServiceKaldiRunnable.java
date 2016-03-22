@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
+import ee.ioc.phon.netspeechapi.duplex.RecognitionEvent;
+import ee.ioc.phon.netspeechapi.duplex.RecognitionEventListener;
 import ee.ioc.phon.netspeechapi.duplex.WsDuplexRecognitionSession;
 
 import org.eclipse.smarthome.io.audio.AudioFormat;
@@ -26,7 +28,7 @@ import org.eclipse.smarthome.io.voice.STTListener;
  * @author Kelly Davis - Initial contribution and API
  *
  */
-public class STTServiceKaldiRunnable implements Runnable {
+public class STTServiceKaldiRunnable implements Runnable, RecognitionEventListener {
    /**
     * Boolean indicating if the thread is aborting
     */
@@ -59,6 +61,8 @@ public class STTServiceKaldiRunnable implements Runnable {
         this.audioSource = audioSource;
         this.sttListener = sttListener;
         this.recognitionSession = recognitionSession;
+
+        this.recognitionSession.addRecognitionEventListener(this);
     }
 
    /**
@@ -115,5 +119,19 @@ public class STTServiceKaldiRunnable implements Runnable {
     */
     public void abort() {
         this.isAborting = true;
+    }
+
+   /**
+    * {@inheritDoc}
+    */
+    public void onRecognitionEvent(RecognitionEvent recognitionEvent) {
+        // RecognitionEvent are ignored
+    }
+
+   /**
+    * {@inheritDoc}
+    */
+    public void onClose() {
+        this.abort();
     }
 }
