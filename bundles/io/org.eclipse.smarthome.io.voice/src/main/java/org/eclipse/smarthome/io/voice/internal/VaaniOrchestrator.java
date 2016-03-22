@@ -27,6 +27,7 @@ import org.eclipse.smarthome.io.voice.SpeechRecognitionEvent;
 import org.eclipse.smarthome.io.voice.SpeechRecognitionErrorEvent;
 import org.eclipse.smarthome.io.voice.STTEvent;
 import org.eclipse.smarthome.io.voice.STTException;
+import org.eclipse.smarthome.io.voice.STTServiceHandle;
 import org.eclipse.smarthome.io.voice.STTService;
 import org.eclipse.smarthome.io.voice.TTSException;
 import org.eclipse.smarthome.io.voice.TTSService;
@@ -66,9 +67,9 @@ public class VaaniOrchestrator implements KSListener, STTListener {
     private HumanLanguageInterpreter humanLanguageInterpreter;
 
    /**
-    * The current question
+    * The STTServiceHandle for the current recognize call
     */
-    private String question = null;
+    private STTServiceHandle sttServiceHandle = null;
 
    /**
     * Supported Locale
@@ -101,7 +102,7 @@ public class VaaniOrchestrator implements KSListener, STTListener {
             KeywordSpottingEvent kse = (KeywordSpottingEvent) ksEvent;
             AudioSource audioSource = kse.getAudioSource();
             try {
-                this.sttService.recognize(this, audioSource, this.locale, new HashSet<String>());
+                this.sttServiceHandle = this.sttService.recognize(this, audioSource, this.locale, new HashSet<String>());
             } catch(STTException e) {
                 say("Encountered error recognizing, " + e.getMessage());
             }
@@ -116,22 +117,18 @@ public class VaaniOrchestrator implements KSListener, STTListener {
     */
     public void sttEventReceived(STTEvent  sttEvent) {
         if (sttEvent instanceof SpeechRecognitionEvent) {
+            this.sttServiceHandle.abort();
             SpeechRecognitionEvent sre = (SpeechRecognitionEvent) sttEvent;
-            this.question = sre.getTranscript();
-        } else if (sttEvent instanceof RecognitionStopEvent) {
-            if (null == this.question) {
-              say("Sorry I didn't get that.");
-            } else {
-                try {
-                    say(this.humanLanguageInterpreter.interpret(this.locale, this.question));
-                    this.question = null;
-                } catch(InterpretationException e) {
-                    say("Encountered error interpreting, " + e.getMessage());
-                }
+            String question = sre.getTranscript();
+            try {
+                say(this.humanLanguageInterpreter.interpret(this.locale, question));
+            } catch(InterpretationException e) {
+                say("Encountered error interpreting, " + e.getMessage());
             }
         } else if (sttEvent instanceof SpeechRecognitionErrorEvent) {
-           SpeechRecognitionErrorEvent sre = (SpeechRecognitionErrorEvent) sttEvent;
-           say("Encountered error: " + sre.getMessage());
+            this.sttServiceHandle.abort();
+            SpeechRecognitionErrorEvent sre = (SpeechRecognitionErrorEvent) sttEvent;
+            say("Encountered error: " + sre.getMessage());
         }
     }
 
