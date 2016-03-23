@@ -123,7 +123,7 @@ public class VaaniOrchestrator implements KSListener, STTListener {
             try {
                 say(this.humanLanguageInterpreter.interpret(this.locale, question));
             } catch(InterpretationException e) {
-                say("Encountered error interpreting, " + e.getMessage());
+                say(e.getMessage());
             }
         } else if (sttEvent instanceof SpeechRecognitionErrorEvent) {
             this.sttServiceHandle.abort();
