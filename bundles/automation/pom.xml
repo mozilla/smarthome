@@ -29,9 +29,7 @@
     <module>org.eclipse.smarthome.automation.module.timer.test</module>
     <module>org.eclipse.smarthome.automation.module.script</module>
     <module>org.eclipse.smarthome.automation.module.script.defaultscope</module>
-    <module>org.eclipse.smarthome.automation.module.script.test</module>
     <module>org.eclipse.smarthome.automation.event.test</module>
-    <module>org.eclipse.smarthome.automation.integration.test</module>
     <module>org.eclipse.smarthome.automation.sample.extension.java</module>
     <module>org.eclipse.smarthome.automation.rest</module>
 	<module>org.eclipse.smarthome.automation.sample.rest.api</module>
