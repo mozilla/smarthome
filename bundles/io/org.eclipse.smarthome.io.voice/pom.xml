@@ -207,6 +207,17 @@
               <force>true</force>
             </artifactItem>
 
+            <artifactItem>
+              <groupId>org.scijava</groupId>
+              <artifactId>native-lib-loader</artifactId>
+              <version>2.1.3</version>
+              <packaging>jar</packaging>
+              <downloadUrl>
+                https://repo1.maven.org/maven2/org/scijava/native-lib-loader/2.1.3/native-lib-loader-2.1.3.jar
+              </downloadUrl>
+              <force>true</force>
+            </artifactItem>
+
           </artifactItems>
         </configuration>
         <executions>
@@ -236,5 +247,5 @@
       </plugins>
     </pluginManagement>
 
-  </build>
+  </build>  
 </project>
