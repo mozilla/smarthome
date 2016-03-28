@@ -503,7 +503,7 @@ public abstract class AbstractRuleBasedInterpreter implements HumanLanguageInter
         if (name == null) {
             return parts;
         }
-        String[] split = name.replaceAll("\\.", "").split("(?<!^)(?=[A-Z])|_|\\s+");
+        String[] split = name.toLowerCase().replaceAll("\\.", "").split("(?<!^)(?=[A-Z])|_|\\s+");
         for (int i = 0; i < split.length; i++) {
             String part = split[i].trim();
             if (part.length() > 1) {
