@@ -34,6 +34,11 @@ git clone https://github.com/eclipse/smarthome.git
 3. Building with Maven
 ======================
 
+### 3.1 Vaani pre-requisites:
+Prior to build ESH, you need to install pocketsphinx for offline recongition and voice activiation. To do that just execute: `setup_pocketsphinx.sh` in ESH root.  
+
+### 3.2 ESH:
+
 To build Eclipse SmartHome from the sources, Maven takes care of everything:
 - set MAVEN_OPTS to "-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
 - change into the smarthome directory ("cd smarthome“)
