@@ -35,7 +35,7 @@ git clone https://github.com/eclipse/smarthome.git
 ======================
 
 ### 3.1 Vaani pre-requisites:
-Prior to build ESH, you need to install pocketsphinx for offline recongition and voice activiation. To do that just execute: `setup_pocketsphinx.sh` in ESH root.  
+Prior to build ESH, you need to install pocketsphinx for offline recongition and voice activiation. To do that just execute: `setup_pocketsphinx.sh` at ESH root.  
 
 ### 3.2 ESH:
 
