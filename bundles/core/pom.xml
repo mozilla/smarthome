@@ -23,7 +23,6 @@
     <module>org.eclipse.smarthome.core.id.test</module>
     <module>org.eclipse.smarthome.core.test</module>
     <module>org.eclipse.smarthome.core.thing</module>
-    <module>org.eclipse.smarthome.core.thing.test</module>
     <module>org.eclipse.smarthome.core.persistence</module>
     <module>org.eclipse.smarthome.core.scheduler</module>
     <module>org.eclipse.smarthome.core.transform</module>
