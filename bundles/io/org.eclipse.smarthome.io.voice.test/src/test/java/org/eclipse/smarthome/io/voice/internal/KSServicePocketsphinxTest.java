@@ -16,9 +16,10 @@ import org.eclipse.smarthome.io.audio.AudioException;
 import org.eclipse.smarthome.io.audio.AudioFormat;
 import org.eclipse.smarthome.io.audio.AudioSource;
 import org.eclipse.smarthome.io.voice.KSEvent;
+import org.eclipse.smarthome.io.voice.KSException;
 import org.eclipse.smarthome.io.voice.KSListener;
 import org.eclipse.smarthome.io.voice.KeywordSpottingErrorEvent;
-import org.eclipse.smarthome.io.voice.RecognitionStopEvent;
+import org.eclipse.smarthome.io.voice.KeywordSpottingEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ import org.junit.Test;
  * @author Andre Natal
  */
 public class KSServicePocketsphinxTest {
+
     /**
      * Test KSServicePocketsphinx.getSupportedLocales()
      */
@@ -47,49 +49,28 @@ public class KSServicePocketsphinxTest {
     }
 
     /**
-     * Utility STTListener for testing
+     * Utility KSListener for testing
      */
-    static class KSListenerUtility implements KSListener {
-        /**
-         * Boolean indicating if session is closed
-         */
-        private boolean isClosed = false;
+    class KSListenerUtility implements KSListener {
+        String keyword;
+        boolean isSpot;
+        KeywordSpottingErrorEvent e;
 
-        /**
-         * Final transcript
-         */
-        private String wordspot;
-
-        /**
-         * Gets if the session is closed
-         *
-         * @return If the session is closed
-         */
-        public boolean isClosed() {
-            return this.isClosed;
-        }
-
-        /**
-         * Gets the transcript
-         *
-         * @return The transcript
-         */
-        public String getSpot() {
-            return this.wordspot;
+        public KSListenerUtility(String keyword) {
+            this.keyword = keyword;
         }
 
         @Override
         public void ksEventReceived(KSEvent ksEvent) {
-            if (ksEvent instanceof KSEvent) {
-                // this.wordspot = wordspot ksEvent.
-                return;
-            }
-            if (ksEvent instanceof RecognitionStopEvent) {
-                this.isClosed = true;
+            if (ksEvent instanceof KeywordSpottingEvent) {
+                isSpot = true;
             }
             if (ksEvent instanceof KeywordSpottingErrorEvent) {
-                KeywordSpottingErrorEvent e = (KeywordSpottingErrorEvent) ksEvent;
-                throw new RuntimeException("Error occured in STT: " + e.getMessage());
+                e = (KeywordSpottingErrorEvent) ksEvent;
+            }
+
+            synchronized (this) {
+                this.notify();
             }
         }
     }
@@ -97,7 +78,7 @@ public class KSServicePocketsphinxTest {
     /**
      * Utility AudioSource for testing
      */
-    static class FileAudioSource implements AudioSource {
+    class FileAudioSource implements AudioSource {
         /**
          * The name of the wrapped file
          */
@@ -150,36 +131,29 @@ public class KSServicePocketsphinxTest {
     }
 
     /**
-     * Test STTServiceKaldi.recognize()
+     * Test ksServicePocketsphinx.recognize()
      */
     @Test
     public void recognizeTest() {
+        String keyword = "forward";
+        KSServicePocketsphinx ksServicePocketsphinx = new KSServicePocketsphinx();
+        KSListenerUtility ksListener = new KSListenerUtility(keyword);
+        FileAudioSource fsrc = new FileAudioSource("goforward.raw");
+        try {
+            ksServicePocketsphinx.spot(ksListener, fsrc, null, keyword);
 
-        // /*
-        // KSServicePocketsphinx ksServicePocketsphinx = new KSServicePocketsphinx();
-        //
-        // KSListenerUtility ksListener = new KSListenerUtility();
-        // FileAudioSource fileAudioSource = new FileAudioSource("hellowworld.raw");
-        // Locale locale = new Locale("en", "US");
-        // HashSet<String> grammars = new HashSet<String>();
-        // String keyword = "forward";
-        //
-        // try {
-        // // KSServiceHandle ksServiceHandle = ksServicePocketsphinx.spot(ksListener, fileAudioSource, locale,
-        // // keyword);
-        // while (!ksListener.isClosed()) {
-        // /*
-        // * synchronized (sttListenerUtility) {
-        // * sttListenerUtility.wait(1000);
-        // * }
-        // */
-        // }
-        // // Assert.assertEquals("The decoded text doesn't match the spoken test", "hello world.",
-        // // ksListener.getTranscript());
-        // } catch (STTException e) {
-        // Assert.fail("STTServiceKaldi.recognize() failed with STTException: " + e.getMessage());
-        // } catch (InterruptedException e) {
-        // Assert.fail("STTListenerUtility.wait() failed with InterruptedException: " + e.getMessage());
-        // }
+            synchronized (ksListener) {
+                ksListener.wait(3000);
+            }
+
+            if (!ksListener.isSpot) {
+                Assert.fail("KSServicePocketsphinx.spot() failed to spot the word:" + keyword);
+            }
+        } catch (KSException e) {
+            // TODO Auto-generated catch block
+            Assert.fail("KSServicePocketsphinx.spot() failed with message:" + e.getMessage());
+        } catch (InterruptedException e) {
+            Assert.fail("KSListenerUtility.wait() failed with InterruptedException: " + e.getMessage());
+        }
     }
 }
