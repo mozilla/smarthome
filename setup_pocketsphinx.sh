@@ -13,8 +13,10 @@ cd pocketsphinx
 git clone https://github.com/mozilla/sphinxbase
 git clone https://github.com/mozilla/pocketsphinx
 cd sphinxbase
+./autogen.sh
 ./configure && make && make install 
 cd ../pocketsphinx
+./autogen.sh
 ./configure && make && make install 
 
 
