@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-
+set -e
 
 echo "##### This script installs its libraries into system folders, so please make sure you are running it as a user with proper permissions."
 echo "##### Hit any key to continue..."
