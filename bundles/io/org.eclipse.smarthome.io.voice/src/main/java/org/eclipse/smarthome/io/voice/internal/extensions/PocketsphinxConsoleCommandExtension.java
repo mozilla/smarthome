@@ -32,6 +32,8 @@ import org.eclipse.smarthome.io.voice.KeywordSpottingErrorEvent;
 import org.eclipse.smarthome.io.voice.KeywordSpottingEvent;
 import org.eclipse.smarthome.io.voice.RecognitionStopEvent;
 
+import edu.cmu.pocketsphinx.nar.NarSystem;
+
 /**
  * Console command extension to interpret human language commands.
  *
