@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.cmu.pocketsphinx.Config;
 import edu.cmu.pocketsphinx.Decoder;
+import edu.cmu.pocketsphinx.nar.NarSystem;
 
 /**
  * This is a Keywordspot service implementation using pocketsphinx.
@@ -37,7 +38,7 @@ import edu.cmu.pocketsphinx.Decoder;
 public class KSServicePocketsphinx implements KSService {
 
     static {
-        System.loadLibrary("pocketsphinx_jni");
+        NarSystem.loadLibrary();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(KSServicePocketsphinx.class);
@@ -166,8 +167,8 @@ class KSServiceRunnable implements Runnable {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             System.out.println("exception - na thread ks" + e.getMessage());
-            KeywordSpottingErrorEvent ksEvent = new KeywordSpottingErrorEvent(e.getMessage());
-            ksListener.ksEventReceived(ksEvent);
+            KeywordSpottingErrorEvent ksErrorEvent = new KeywordSpottingErrorEvent(e.getMessage());
+            ksListener.ksEventReceived(ksErrorEvent);
         }
     }
 
