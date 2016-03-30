@@ -72,6 +72,11 @@ public class VaaniOrchestrator implements KSListener, STTListener {
     private STTServiceHandle sttServiceHandle = null;
 
    /**
+    * If the orchestrator should spot on RecognitionStopEvent
+    */
+    private boolean spotOnRecognitionStopEvent = true;
+
+   /**
     * Supported Locale
     */
     private final Locale locale = new Locale("en", "US");
@@ -115,18 +120,25 @@ public class VaaniOrchestrator implements KSListener, STTListener {
    /**
     * {@inheritDoc}
     */
-    public void sttEventReceived(STTEvent  sttEvent) {
+    public synchronized void sttEventReceived(STTEvent  sttEvent) {
         if (sttEvent instanceof SpeechRecognitionEvent) {
             this.sttServiceHandle.abort();
             SpeechRecognitionEvent sre = (SpeechRecognitionEvent) sttEvent;
             String question = sre.getTranscript();
             try {
+                this.spotOnRecognitionStopEvent = false;
                 say(this.humanLanguageInterpreter.interpret(this.locale, question));
             } catch(InterpretationException e) {
                 say(e.getMessage());
             }
+        } else if(sttEvent instanceof RecognitionStopEvent) {
+            if (this.spotOnRecognitionStopEvent) {
+                spot();
+            }
+            this.spotOnRecognitionStopEvent = true;
         } else if (sttEvent instanceof SpeechRecognitionErrorEvent) {
             this.sttServiceHandle.abort();
+            this.spotOnRecognitionStopEvent = false;
             SpeechRecognitionErrorEvent sre = (SpeechRecognitionErrorEvent) sttEvent;
             say("Encountered error: " + sre.getMessage());
         }
