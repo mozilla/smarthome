@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 set -e
 
 echo "##### This script installs its libraries into system folders, so please make sure you are running it as a user with proper permissions."
@@ -30,6 +31,10 @@ make
 
 echo "##### Generating the maven-nar artifact."
 mvn clean install
+
+echo "##### Setting the pocketsphinx model folder into esh properties."
+directory=`pwd`
+echo "modelpath = $directory/../../../../pocketsphinx/pocketsphinx/model/en-us/" > "$directory/../../../../bundles/io/org.eclipse.smarthome.io.voice/src/main/resources/pocketsphinx.properties"
 
 
 echo "##### Done! Now do a full maven build of ESH."
