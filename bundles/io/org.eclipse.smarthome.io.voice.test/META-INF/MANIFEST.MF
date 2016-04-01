@@ -13,4 +13,3 @@ Bundle-ClassPath: .,
  lib/nar-maven-pocketsphinx-1.0-SNAPSHOT.jar,
  lib/nar-maven-pocketsphinx-1.0-SNAPSHOT-jni.nar,
  lib/native-lib-loader-2.1.3.jar
- 
