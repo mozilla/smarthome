@@ -34,7 +34,7 @@ mvn clean install
 
 echo "##### Setting the pocketsphinx model folder into esh properties."
 directory=`pwd`
-echo "modelpath = $directory/../../../../pocketsphinx/pocketsphinx/model/en-us/" > "$directory/../../../../bundles/io/org.eclipse.smarthome.io.voice/src/main/resources/pocketsphinx.properties"
+echo "modelpath = $directory/../../../../pocketsphinx/pocketsphinx/model/en-us/" > "$directory/../../../../bundles/io/org.eclipse.smarthome.io.voice/src/main/resources/pocketsphinx_en_US.properties"
 
 
 echo "##### Done! Now do a full maven build of ESH."
