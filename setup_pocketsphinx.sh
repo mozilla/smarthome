@@ -3,11 +3,7 @@
 
 set -e
 
-echo "##### This script installs its libraries into system folders, so please make sure you are running it as a user with proper permissions."
-echo "##### Hit any key to continue..."
-
-read ok
-echo "##### Installing pocketsphinx...."
+echo "##### This script installs pocketsphinx libraries for Vaani-Iot."
 rm -rf pocketsphinx
 mkdir pocketsphinx
 cd pocketsphinx
@@ -15,10 +11,10 @@ git clone https://github.com/mozilla/sphinxbase
 git clone https://github.com/mozilla/pocketsphinx
 cd sphinxbase
 ./autogen.sh
-./configure && make && make install 
+./configure --prefix=`pwd`/../../bundles/io/org.eclipse.smarthome.io.voice/lib/ps/ && make && make install 
 cd ../pocketsphinx
 ./autogen.sh
-./configure && make && make install 
+./configure --prefix=`pwd`/../../bundles/io/org.eclipse.smarthome.io.voice/lib/ps/ && make && make install 
 
 
 echo "##### Generating swig libraries...."
