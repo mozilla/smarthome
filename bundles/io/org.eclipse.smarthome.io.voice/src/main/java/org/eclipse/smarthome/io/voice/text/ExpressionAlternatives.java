@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Expression that successfully parses, if one of the given alternative expressions matches. This class is immutable.
@@ -33,10 +34,10 @@ final class ExpressionAlternatives extends Expression {
     }
 
     @Override
-    ASTNode parse(TokenList list) {
+    ASTNode parse(ResourceBundle language, TokenList list) {
         ASTNode node = new ASTNode(), cr;
         for (int i = 0; i < subExpressions.size(); i++) {
-            cr = subExpressions.get(i).parse(list);
+            cr = subExpressions.get(i).parse(language, list);
             if (cr.isSuccess()) {
                 node.setChildren(new ASTNode[] {
                         cr
@@ -57,10 +58,10 @@ final class ExpressionAlternatives extends Expression {
     }
 
     @Override
-    boolean collectFirsts(HashSet<String> firsts) {
+    boolean collectFirsts(ResourceBundle language, HashSet<String> firsts) {
         boolean blocking = true;
         for (Expression e : subExpressions) {
-            blocking = blocking && e.collectFirsts(firsts);
+            blocking = blocking && e.collectFirsts(language, firsts);
         }
         return blocking;
     }
