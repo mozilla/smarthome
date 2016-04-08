@@ -38,7 +38,7 @@ public abstract class Rule {
     public abstract InterpretationResult interpretAST(ResourceBundle language, ASTNode node);
 
     InterpretationResult execute(ResourceBundle language, TokenList list) {
-        ASTNode node = expression.parse(list);
+        ASTNode node = expression.parse(language, list);
         if (node.isSuccess() && node.getRemainingTokens().eof()) {
             return interpretAST(language, node);
         }

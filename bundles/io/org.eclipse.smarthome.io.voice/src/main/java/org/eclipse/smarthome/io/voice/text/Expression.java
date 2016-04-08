@@ -10,6 +10,7 @@ package org.eclipse.smarthome.io.voice.text;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Base class for all expressions.
@@ -21,7 +22,7 @@ public abstract class Expression {
     Expression() {
     }
 
-    abstract ASTNode parse(TokenList list);
+    abstract ASTNode parse(ResourceBundle language, TokenList list);
 
     void generateValue(ASTNode node) {
     }
@@ -30,11 +31,11 @@ public abstract class Expression {
         return Collections.emptyList();
     }
 
-    abstract boolean collectFirsts(HashSet<String> firsts);
+    abstract boolean collectFirsts(ResourceBundle language, HashSet<String> firsts);
 
-    HashSet<String> getFirsts() {
+    HashSet<String> getFirsts(ResourceBundle language) {
         HashSet<String> firsts = new HashSet<String>();
-        collectFirsts(firsts);
+        collectFirsts(language, firsts);
         return firsts;
     }
 }

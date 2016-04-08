@@ -8,6 +8,7 @@
 package org.eclipse.smarthome.io.voice.text;
 
 import java.util.HashSet;
+import java.util.ResourceBundle;
 
 /**
  * Expression that successfully parses, if a thing identifier token is found. This class is immutable.
@@ -17,7 +18,7 @@ import java.util.HashSet;
  */
 public final class ExpressionIdentifier extends Expression {
     private AbstractRuleBasedInterpreter interpreter;
-    private HashSet<String> excludes;
+    private Expression stopper;
 
     /**
      * Constructs a new instance.
@@ -32,23 +33,21 @@ public final class ExpressionIdentifier extends Expression {
      * Constructs a new instance.
      *
      * @param interpreter the interpreter it belongs to. Used for dynamically fetching item name tokens
-     * @param excludes tokens that should not occur for this expression to match
+     * @param stopper Expression that should not match, if the current token should be accepted as identifier
      */
-    public ExpressionIdentifier(AbstractRuleBasedInterpreter interpreter, HashSet<String> excludes) {
+    public ExpressionIdentifier(AbstractRuleBasedInterpreter interpreter, Expression stopper) {
         super();
         this.interpreter = interpreter;
-        this.excludes = excludes == null ? new HashSet<String>() : new HashSet<String>(excludes);
+        this.stopper = stopper;
     }
 
     @Override
-    ASTNode parse(TokenList list) {
+    ASTNode parse(ResourceBundle language, TokenList list) {
         ASTNode node = new ASTNode();
-        HashSet<String> tokens = interpreter.getIdentifierTokens();
-        String head = list.head();
-        node.setSuccess(head != null /* && tokens.contains(head) */ && !excludes.contains(head));
+        node.setSuccess(list.size() > 0 && (stopper == null || !stopper.parse(language, list).isSuccess()));
         if (node.isSuccess()) {
             node.setRemainingTokens(list.skipHead());
-            node.setValue(head);
+            node.setValue(list.head());
             node.setChildren(new ASTNode[0]);
             generateValue(node);
         }
@@ -56,16 +55,18 @@ public final class ExpressionIdentifier extends Expression {
     }
 
     @Override
-    boolean collectFirsts(HashSet<String> firsts) {
-        HashSet<String> f = new HashSet<String>(interpreter.getIdentifierTokens());
-        f.removeAll(excludes);
+    boolean collectFirsts(ResourceBundle language, HashSet<String> firsts) {
+        HashSet<String> f = new HashSet<String>(interpreter.getAllItemTokens(language.getLocale()));
+        if (stopper != null) {
+            f.removeAll(stopper.getFirsts(language));
+        }
         firsts.addAll(f);
         return true;
     }
 
     @Override
     public String toString() {
-        return "identifier(stop=\"" + excludes + "\")";
+        return "identifier(stop=" + stopper + ")";
     }
 
     /**
@@ -76,9 +77,9 @@ public final class ExpressionIdentifier extends Expression {
     }
 
     /**
-     * @return the excludes
+     * @return the stopper expression
      */
-    public HashSet<String> getExcludes() {
-        return new HashSet<String>(excludes);
+    public Expression getStopper() {
+        return stopper;
     }
 }
