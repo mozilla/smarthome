@@ -29,5 +29,22 @@
     <module>org.eclipse.smarthome.feature.test</module>
     <module>karaf</module>
   </modules>
-
+ <build>
+    <plugins>
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.4.0</version>
+          <executions>
+            <execution>
+             <id>pocketsphinx-install</id>
+             <phase/>
+            </execution>
+          </executions>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
