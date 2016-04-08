@@ -9,6 +9,7 @@ package org.eclipse.smarthome.io.voice.internal.text;
 
 import java.util.Locale;
 
+import org.eclipse.smarthome.core.library.types.HSBType;
 import org.eclipse.smarthome.core.library.types.IncreaseDecreaseType;
 import org.eclipse.smarthome.core.library.types.NextPreviousType;
 import org.eclipse.smarthome.core.library.types.OnOffType;
@@ -37,7 +38,18 @@ public class StandardInterpreter extends AbstractRuleBasedInterpreter {
         Expression onOff = alt(cmd("on", OnOffType.ON), cmd("off", OnOffType.OFF));
         Expression turn = alt("turn", "switch");
         Expression put = alt("put", "bring");
+        Expression of = opt("of");
         Expression the = opt("the");
+        Expression to = opt("to");
+        Expression color = alt(
+            cmd("white", HSBType.WHITE),
+            cmd("pink", HSBType.fromRGB(255, 96, 208)),
+            cmd("yellow", HSBType.fromRGB(255, 224, 32)),
+            cmd("orange", HSBType.fromRGB(255, 160, 16)),
+            cmd("purple", HSBType.fromRGB(128, 0, 128)),
+            cmd("red", HSBType.RED),
+            cmd("green", HSBType.GREEN),
+            cmd("blue", HSBType.BLUE));
 
         addRules(
             Locale.ENGLISH,
@@ -61,6 +73,10 @@ public class StandardInterpreter extends AbstractRuleBasedInterpreter {
 
         itemRule(seq(cmd(alt("brighten", "increase", "harden", "enhance"),
             IncreaseDecreaseType.INCREASE), the) /* item */),
+
+        /* ColorType */
+
+        itemRule(seq(opt("set"), the, opt("color"), of, the), /* item */ seq(to, color)),
 
         /* UpDownType */
 

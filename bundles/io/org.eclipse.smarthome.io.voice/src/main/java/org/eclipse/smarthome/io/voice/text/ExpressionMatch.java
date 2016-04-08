@@ -8,6 +8,7 @@
 package org.eclipse.smarthome.io.voice.text;
 
 import java.util.HashSet;
+import java.util.ResourceBundle;
 
 /**
  * Expression that successfully parses, if a given string constant is found. This class is immutable.
@@ -29,7 +30,7 @@ public final class ExpressionMatch extends Expression {
     }
 
     @Override
-    ASTNode parse(TokenList list) {
+    ASTNode parse(ResourceBundle language, TokenList list) {
         ASTNode node = new ASTNode();
         node.setSuccess(list.checkHead(pattern));
         if (node.isSuccess()) {
@@ -42,7 +43,7 @@ public final class ExpressionMatch extends Expression {
     }
 
     @Override
-    boolean collectFirsts(HashSet<String> firsts) {
+    boolean collectFirsts(ResourceBundle language, HashSet<String> firsts) {
         firsts.add(pattern);
         return true;
     }
