@@ -67,6 +67,26 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+           <id>pocketsphinx-install</id>
+           <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>bash</executable>
+          <arguments>
+            <argument>setup_pocketsphinx.sh</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>${tycho-groupid}</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho-version}</version>
