@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Expression that decorates the resulting (proxied) AST node of a given expression by a name, value and tag.
@@ -69,8 +70,8 @@ public final class ExpressionLet extends Expression {
     }
 
     @Override
-    ASTNode parse(TokenList list) {
-        ASTNode node = subExpression.parse(list);
+    ASTNode parse(ResourceBundle language, TokenList list) {
+        ASTNode node = subExpression.parse(language, list);
         if (node.isSuccess()) {
             node.setName(name);
             if (value != null) {
@@ -89,8 +90,8 @@ public final class ExpressionLet extends Expression {
     }
 
     @Override
-    boolean collectFirsts(HashSet<String> firsts) {
-        return subExpression.collectFirsts(firsts);
+    boolean collectFirsts(ResourceBundle language, HashSet<String> firsts) {
+        return subExpression.collectFirsts(language, firsts);
     }
 
     @Override

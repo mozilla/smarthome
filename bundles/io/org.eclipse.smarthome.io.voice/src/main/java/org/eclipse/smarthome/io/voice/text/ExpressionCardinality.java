@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Expression that successfully parses, if a given expression occurs or repeats with a specified cardinality. This class
@@ -39,11 +40,11 @@ public final class ExpressionCardinality extends Expression {
     }
 
     @Override
-    ASTNode parse(TokenList list) {
+    ASTNode parse(ResourceBundle language, TokenList list) {
         ASTNode node = new ASTNode(), cr;
         ArrayList<ASTNode> nodes = new ArrayList<ASTNode>();
         ArrayList<Object> values = new ArrayList<Object>();
-        while ((cr = subExpression.parse(list)).isSuccess()) {
+        while ((cr = subExpression.parse(language, list)).isSuccess()) {
             nodes.add(cr);
             values.add(cr.getValue());
             list = cr.getRemainingTokens();
@@ -67,8 +68,8 @@ public final class ExpressionCardinality extends Expression {
     }
 
     @Override
-    boolean collectFirsts(HashSet<String> firsts) {
-        return subExpression.collectFirsts(firsts) || atLeastOne;
+    boolean collectFirsts(ResourceBundle language, HashSet<String> firsts) {
+        return subExpression.collectFirsts(language, firsts) || atLeastOne;
     }
 
     @Override
