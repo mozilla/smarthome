@@ -4,15 +4,14 @@
 set -e
 
 echo "##### This script installs pocketsphinx libraries for Vaani-Iot."
-rm -rf pocketsphinx
-mkdir pocketsphinx
-cd pocketsphinx
-git clone https://github.com/mozilla/sphinxbase
-git clone https://github.com/mozilla/pocketsphinx
-cd sphinxbase
+git submodule init
+git submodule update
+cd pocketsphinx/sphinxbase
+git pull origin master
 ./autogen.sh
 ./configure --prefix=`pwd`/../../bundles/io/org.eclipse.smarthome.io.voice/lib/ps/ && make && make install 
 cd ../pocketsphinx
+git pull origin master
 ./autogen.sh
 ./configure --prefix=`pwd`/../../bundles/io/org.eclipse.smarthome.io.voice/lib/ps/ && make && make install 
 
