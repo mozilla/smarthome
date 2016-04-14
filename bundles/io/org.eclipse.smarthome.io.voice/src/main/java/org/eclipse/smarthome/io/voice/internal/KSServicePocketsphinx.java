@@ -7,11 +7,13 @@
  */
 package org.eclipse.smarthome.io.voice.internal;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.eclipse.smarthome.io.audio.AudioFormat;
@@ -27,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.cmu.pocketsphinx.Config;
 import edu.cmu.pocketsphinx.Decoder;
+import edu.cmu.pocketsphinx.nar.NarSystem;
 
 /**
  * This is a Keywordspot service implementation using pocketsphinx.
@@ -37,7 +40,7 @@ import edu.cmu.pocketsphinx.Decoder;
 public class KSServicePocketsphinx implements KSService {
 
     static {
-        System.loadLibrary("pocketsphinx_jni");
+        NarSystem.loadLibrary();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(KSServicePocketsphinx.class);
@@ -120,6 +123,9 @@ public class KSServicePocketsphinx implements KSService {
 
 class KSServiceRunnable implements Runnable {
 
+    private static final String PocketsphinxProperties = "pocketsphinx";
+    private static final String MODELPATH = "modelpath";
+
     String keyword;
     KSListener ksListener;
     AudioSource audioSource;
@@ -134,11 +140,16 @@ class KSServiceRunnable implements Runnable {
     public void run() {
 
         try {
+
+            ResourceBundle psproperties = ResourceBundle.getBundle(PocketsphinxProperties, Locale.getDefault());
+            String modelpath = psproperties.getString(MODELPATH);
+            String dictpath = modelpath + File.separator + "cmudict-en-us.dict";
+            modelpath = modelpath + File.separator + "en-us";
+
             Config c = Decoder.defaultConfig();
-            c.setString("-hmm", "/Users/anatal/projects/mozilla/vaani-iot/pocketsphinx/pocketsphinx/model/en-us/en-us");
+            c.setString("-hmm", modelpath);
             c.setString("-keyphrase", keyword.toLowerCase());
-            c.setString("-dict",
-                    "/Users/anatal/projects/mozilla/vaani-iot/pocketsphinx/pocketsphinx/model/en-us/cmudict-en-us.dict");
+            c.setString("-dict", dictpath);
             c.setFloat("-kws_threshold", 1e-20);
 
             Decoder d = new Decoder(c);
@@ -166,8 +177,8 @@ class KSServiceRunnable implements Runnable {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             System.out.println("exception - na thread ks" + e.getMessage());
-            KeywordSpottingErrorEvent ksEvent = new KeywordSpottingErrorEvent(e.getMessage());
-            ksListener.ksEventReceived(ksEvent);
+            KeywordSpottingErrorEvent ksErrorEvent = new KeywordSpottingErrorEvent(e.getMessage());
+            ksListener.ksEventReceived(ksErrorEvent);
         }
     }
 
