@@ -15,6 +15,9 @@ git pull origin master
 ./autogen.sh
 ./configure --prefix=`pwd`/../../bundles/io/org.eclipse.smarthome.io.voice/lib/ps/ && make && make install 
 
+export LD_RUN_PATH=`pwd`/../../bundles/io/org.eclipse.smarthome.io.voice/lib/ps/lib/
+echo "#### LD_RUN_PATH set to: $LD_RUN_PATH"
+
 
 echo "##### Generating swig libraries...."
 cd swig
@@ -31,5 +34,6 @@ echo "##### Setting the pocketsphinx model folder into esh properties."
 directory=`pwd`
 echo "modelpath = $directory/../../../../pocketsphinx/pocketsphinx/model/en-us/" > "$directory/../../../../bundles/io/org.eclipse.smarthome.io.voice/src/main/resources/pocketsphinx_en_US.properties"
 
+unset LD_RUN_PATH
 
 echo "##### Done! Now do a full maven build of ESH."
