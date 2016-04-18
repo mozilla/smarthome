@@ -67,6 +67,26 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <executions>
+          <execution>
+           <id>pocketsphinx-install</id>
+           <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <executable>bash</executable>
+          <arguments>
+            <argument>setup_pocketsphinx.sh</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>${tycho-groupid}</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho-version}</version>
@@ -220,6 +240,19 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>3.0.1</version>
+          <extensions>true</extensions>
+          <configuration>
+            <supportedProjectTypes>
+              <supportedProjectType>jar</supportedProjectType>
+              <supportedProjectType>bundle</supportedProjectType>
+              <supportedProjectType>eclipse-plugin</supportedProjectType>
+            </supportedProjectTypes>
+          </configuration>
+        </plugin>
+        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven.compiler.version}</version>
           <configuration>
@@ -245,7 +278,6 @@
             </dependency>
           </dependencies>
         </plugin>
-
         <plugin>
           <groupId>com.mycila</groupId>
           <artifactId>license-maven-plugin</artifactId>

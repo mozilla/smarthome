@@ -5,8 +5,34 @@ Bundle-SymbolicName: org.eclipse.smarthome.io.voice
 Bundle-Version: 0.8.0.qualifier
 Bundle-Vendor: Eclipse.org/SmartHome
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: .
-Import-Package: org.apache.commons.collections,
+Bundle-ClassPath: .,
+ lib/voice-cmu-slt-hsmm-5.0.jar,
+ lib/voice-bits1-hsmm-5.0-SNAPSHOT.jar,
+ lib/voice-bits3-hsmm-5.0-SNAPSHOT.jar,
+ lib/emotionml-checker-java-1.0-SNAPSHOT.jar,
+ lib/freetts-1.0.jar,
+ lib/freetts-de-1.0.jar,
+ lib/freetts-en_us-1.0.jar,
+ lib/jtok-core-1.9.1.jar,
+ lib/marytts-server-5.1-SNAPSHOT.jar,
+ lib/mwdumper-1.16.jar,
+ lib/sgt-3.0.jar,
+ lib/marytts-runtime-5.1-SNAPSHOT.jar,
+ lib/marytts-common-5.1-SNAPSHOT.jar,
+ lib/marytts-signalproc-5.1-SNAPSHOT.jar,
+ lib/marytts-lang-de-5.1-SNAPSHOT.jar,
+ lib/marytts-lang-en-5.1-SNAPSHOT.jar,
+ lib/net-speech-api-0.2.0.jar,
+ lib/pocketsphinx.jar,
+ lib/nar-maven-pocketsphinx-1.0-SNAPSHOT.jar,
+ lib/nar-maven-pocketsphinx-1.0-SNAPSHOT-jni.nar,
+ lib/native-lib-loader-2.1.3.jar,
+ lib/opennlp-maxent-3.0.1-incubating.jar,
+ lib/opennlp-tools-1.5.1-incubating.jar,
+ lib/Java-WebSocket-1.3.0.jar,
+ lib/org.json.simple-0.4.jar
+Import-Package: javax.sound.sampled,
+ org.apache.commons.collections.map,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.smarthome.core.common.registry,
@@ -15,13 +41,14 @@ Import-Package: org.apache.commons.collections,
  org.eclipse.smarthome.core.items.events,
  org.eclipse.smarthome.core.library.types,
  org.eclipse.smarthome.core.types,
+ org.eclipse.smarthome.io.audio,
  org.eclipse.smarthome.io.console,
  org.eclipse.smarthome.io.console.extensions,
- org.eclipse.smarthome.io.voice.tts,
+ org.eclipse.smarthome.io.voice,
  org.osgi.framework,
  org.slf4j
 Export-Package: org.eclipse.smarthome.io.voice.text,
- org.eclipse.smarthome.io.voice.tts
+ org.eclipse.smarthome.io.voice
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.smarthome.io.voice.internal.VoiceActivator
