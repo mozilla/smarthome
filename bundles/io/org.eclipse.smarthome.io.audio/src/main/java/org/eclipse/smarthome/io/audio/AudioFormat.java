@@ -141,7 +141,7 @@ public class AudioFormat {
     * This AudioFormat is compatible with the passed AudioFormat if both have
     * the same value for all non-null members of this instance.
     */
-    boolean isCompatible(AudioFormat audioFormat) {
+    public boolean isCompatible(AudioFormat audioFormat) {
     	if(audioFormat == null) {
     		return false;
     	}
