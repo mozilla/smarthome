@@ -77,6 +77,11 @@ public class VaaniOrchestrator implements KSListener, STTListener {
     private boolean spotOnRecognitionStopEvent = true;
 
    /**
+    * If the STT server is in the process of aborting
+    */
+    private boolean isSTTServerAborting = false;
+
+   /**
     * Supported Locale
     */
     private final Locale locale = new Locale("en", "US");
@@ -103,6 +108,7 @@ public class VaaniOrchestrator implements KSListener, STTListener {
     * {@inheritDoc}
     */
     public void ksEventReceived(KSEvent ksEvent) {
+        this.isSTTServerAborting = false;
         if (ksEvent instanceof KeywordSpottingEvent) {
             KeywordSpottingEvent kse = (KeywordSpottingEvent) ksEvent;
             AudioSource audioSource = kse.getAudioSource();
@@ -122,14 +128,17 @@ public class VaaniOrchestrator implements KSListener, STTListener {
     */
     public synchronized void sttEventReceived(STTEvent  sttEvent) {
         if (sttEvent instanceof SpeechRecognitionEvent) {
-            this.sttServiceHandle.abort();
-            SpeechRecognitionEvent sre = (SpeechRecognitionEvent) sttEvent;
-            String question = sre.getTranscript();
-            try {
-                this.spotOnRecognitionStopEvent = false;
-                say(this.humanLanguageInterpreter.interpret(this.locale, question));
-            } catch(InterpretationException e) {
-                say(e.getMessage());
+            if (false == this.isSTTServerAborting) {
+                this.sttServiceHandle.abort();
+                this.isSTTServerAborting = true;
+                SpeechRecognitionEvent sre = (SpeechRecognitionEvent) sttEvent;
+                String question = sre.getTranscript();
+                try {
+                    this.spotOnRecognitionStopEvent = false;
+                    say(this.humanLanguageInterpreter.interpret(this.locale, question));
+                } catch(InterpretationException e) {
+                    say(e.getMessage());
+                }
             }
         } else if(sttEvent instanceof RecognitionStopEvent) {
             if (this.spotOnRecognitionStopEvent) {
@@ -137,10 +146,13 @@ public class VaaniOrchestrator implements KSListener, STTListener {
             }
             this.spotOnRecognitionStopEvent = true;
         } else if (sttEvent instanceof SpeechRecognitionErrorEvent) {
-            this.sttServiceHandle.abort();
-            this.spotOnRecognitionStopEvent = false;
-            SpeechRecognitionErrorEvent sre = (SpeechRecognitionErrorEvent) sttEvent;
-            say("Encountered error: " + sre.getMessage());
+            if (false == this.isSTTServerAborting ) {
+                this.sttServiceHandle.abort();
+                this.isSTTServerAborting = true;
+                this.spotOnRecognitionStopEvent = false;
+                SpeechRecognitionErrorEvent sre = (SpeechRecognitionErrorEvent) sttEvent;
+                say("Encountered error: " + sre.getMessage());
+            }
         }
     }
 
@@ -194,9 +206,9 @@ public class VaaniOrchestrator implements KSListener, STTListener {
             AudioSource audioSource = microphone.getAudioSource();
             this.ksService.spot(this, audioSource, this.locale, this.keyword);
         } catch(AudioException e) {
-            say("Encountered error obtaining the audio source, " + e.getMessage());
+            logger.error("Encountered error obtaining the audio source, " + e.getMessage());
         } catch(KSException e) {
-            say("Encountered error calling spot, " + e.getMessage());
+            logger.error("Encountered error calling spot, " + e.getMessage());
         }
     }
 
