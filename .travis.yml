@@ -1,9 +1,37 @@
 # openHAB travis.yml
 branches:
   only:
-    - master
+    - vaani
 
-language: java
+install:
+  - wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+  - sudo tar xzvf apache-maven-3.3.9-bin.tar.gz -C /opt/
+  - export PATH=/opt/apache-maven-3.3.9/bin:$PATH
+
+before_script:
+  - sudo rm /etc/mavenrc
+  - sudo rm $HOME/.m2/settings.xml
+  - export MAVEN_OPTS="-Dmaven.artifact.threads=3 -Xmx2469m -XX:MaxPermSize=512m"
+  - export PROJECTS="--projects !bundles/automation/org.eclipse.smarthome.automation.module.script.test/pom.xml"
+
+script:
+  - mvn install -fae -B $PROJECTS 2>&1 | ./filter.py
+
+addons:
+  apt:
+    packages:
+    - swig
+
+sudo: required
+dist: trusty
+
+before_cache:
+  - rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
+  - rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
+
+cache:
+  directories:
+  - $HOME/.m2
 
 jdk:
-  - oraclejdk8
+  - openjdk8
