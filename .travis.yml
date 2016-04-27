@@ -34,7 +34,9 @@ jdk:
 - openjdk8
 
 before_deploy:
-- ODIR=`pwd` && cd $HOME/.m2/repository && find . -name \*.jar | tar -jcvf $ODIR/jars.tar.bz2 -T - && cd $ODIR
+- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
+- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
+- ODIR=`pwd` && cd $HOME/.m2/repository && find . | tar -jcvf $ODIR/jars.tar.bz2 -T - && cd $ODIR
 
 deploy:
   provider: releases
