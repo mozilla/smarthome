@@ -34,7 +34,7 @@ jdk:
 - openjdk8
 
 before_deploy:
-- find .m2 -name \*.jar | tar -jcvf jars.tar.bz2 -T -
+- ODIR=`pwd` && cd $HOME/.m2/repository && find . -name \*.jar | tar -jcvf $ODIR/jars.tar.bz2 -T - && cd $ODIR
 
 deploy:
   provider: releases
