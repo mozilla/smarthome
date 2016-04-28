@@ -3,6 +3,7 @@ import sys
 import fileinput
 
 mode = 0
+counter = 0
 
 for line in fileinput.input():
 	if line.startswith("[INFO] Reactor Summary:"):
@@ -13,23 +14,12 @@ for line in fileinput.input():
 		sys.stdout.write(line)
 	else:
 		if line.startswith("[INFO] Building") and "jar:" not in line and "zip:" not in line:
-			sys.stdout.write(line)
+			print
+			sys.stdout.write(line.replace("\n", " ").replace("\r", ""))
+			sys.stdout.flush()
+			counter = 0
+		else:
+			counter = (counter + 1) % 10
+			if counter == 0:
+				sys.stdout.write(".")
 	sys.stdout.flush()
-		
-		
-
-
-#oll = 0
-
-#for line in fileinput.input():
-#	if oll > 0:
-#		sys.stdout.write(oll * "\b")
-#		sys.stdout.write(oll * " ")
-#		sys.stdout.write(oll * "\b")
-#	if line.startswith("[INFO] Download"):
-#        	sys.stdout.write(line.replace("\n", ""))
-#		oll = len(line)
-#	else:
-#		sys.stdout.write(line)
-#		oll = 0
-#	sys.stdout.flush()
