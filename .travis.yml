@@ -4,19 +4,17 @@ install:
 - tar xzf apache-maven-3.3.9-bin.tar.gz
 
 before_script:
-- sudo rm /etc/mavenrc
-- sudo rm $HOME/.m2/settings.xml
+- rm $HOME/.m2/settings.xml
 - export MAVEN_OPTS="-Dmaven.artifact.threads=3 -Xmx2469m -XX:MaxPermSize=512m"
 - export PROJECTS="--projects !bundles/automation/org.eclipse.smarthome.automation.module.script.test/pom.xml"
 
 script:
-- apache-maven-3.3.9/bin/mvn install -fae -B $PROJECTS 2>&1 | ./filter.py
+- MAVEN_SKIP_RC=true apache-maven-3.3.9/bin/mvn install -fae -B $PROJECTS 2>&1 | ./filter.py
 
 addons:
   apt:
     packages:
     - swig
-    - pv
 
 sudo: required
 
@@ -36,7 +34,7 @@ jdk:
 before_deploy:
 - rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
 - rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
-- OD=`pwd` && cd $HOME/.m2/repository && tar -cf - . | pv | gzip > $OD/m2repository.tar.gz && cd $OD
+- OD=`pwd` && cd $HOME/.m2/repository && tar zcfv $OD/m2repository.tar.gz . 2>&1 | ./filter.py && cd $OD
 
 deploy:
   provider: releases
