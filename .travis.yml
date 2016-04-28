@@ -1,8 +1,7 @@
 
 install:
 - wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-- sudo tar xzvf apache-maven-3.3.9-bin.tar.gz -C /opt/
-- export PATH=/opt/apache-maven-3.3.9/bin:$PATH
+- tar xzf apache-maven-3.3.9-bin.tar.gz
 
 before_script:
 - sudo rm /etc/mavenrc
@@ -11,12 +10,13 @@ before_script:
 - export PROJECTS="--projects !bundles/automation/org.eclipse.smarthome.automation.module.script.test/pom.xml"
 
 script:
-- mvn install -fae -B $PROJECTS 2>&1 | ./filter.py
+- apache-maven-3.3.9/bin/mvn install -fae -B $PROJECTS 2>&1 | ./filter.py
 
 addons:
   apt:
     packages:
     - swig
+    - pv
 
 sudo: required
 
