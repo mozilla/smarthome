@@ -34,7 +34,7 @@ jdk:
 before_deploy:
 - rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
 - rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
-- OD=`pwd` && cd $HOME/.m2/repository && tar zcfv $OD/m2repository.tar.gz . 2>&1 | ./filter.py && cd $OD
+- OD=`pwd` && cd $HOME/.m2/repository && tar zcfv $OD/m2repository.tar.gz . 2>&1 | $OD/filter.py && cd $OD
 
 deploy:
   provider: releases
