@@ -135,10 +135,10 @@ public class KSServicePocketsphinxTest {
      */
     @Test
     public void recognizeTest() {
-        String keyword = "forward";
+        String keyword = "marieta";
         KSServicePocketsphinx ksServicePocketsphinx = new KSServicePocketsphinx();
         KSListenerUtility ksListener = new KSListenerUtility(keyword);
-        FileAudioSource fsrc = new FileAudioSource("goforward.raw");
+        FileAudioSource fsrc = new FileAudioSource("marieta.raw");
         try {
             ksServicePocketsphinx.spot(ksListener, fsrc, null, keyword);
 
