@@ -23,3 +23,4 @@ for line in fileinput.input():
 			if counter == 0:
 				sys.stdout.write(".")
 	sys.stdout.flush()
+print
