@@ -21,7 +21,8 @@ sudo: required
 dist: trusty
 
 before_cache:
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome
+- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
+- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
 
 cache:
   directories:
@@ -31,8 +32,6 @@ jdk:
 - openjdk8
 
 before_deploy:
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/eclipsesmarthome-incubation
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome/products
 - tar zcfv $TRAVIS_BUILD_DIR/m2repository_smarthome.tar.gz -C $HOME/.m2/repository $HOME/.m2/repository/org/eclipse/smarthome 2>&1 | $TRAVIS_BUILD_DIR/filter.py
 - rm -rf $HOME/.m2/repository/org/eclipse/smarthome
 - tar zcfv $TRAVIS_BUILD_DIR/m2repository.tar.gz -C $HOME/.m2/repository . 2>&1 | $TRAVIS_BUILD_DIR/filter.py
