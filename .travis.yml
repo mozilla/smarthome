@@ -32,8 +32,6 @@ jdk:
 - openjdk8
 
 before_deploy:
-- tar zcfv $TRAVIS_BUILD_DIR/m2repository_smarthome.tar.gz -C $HOME/.m2/repository org/eclipse/smarthome 2>&1 | $TRAVIS_BUILD_DIR/filter.py
-- rm -rf $HOME/.m2/repository/org/eclipse/smarthome
 - tar zcfv $TRAVIS_BUILD_DIR/m2repository.tar.gz -C $HOME/.m2/repository . 2>&1 | $TRAVIS_BUILD_DIR/filter.py
 
 deploy:
@@ -42,7 +40,6 @@ deploy:
     secure: Hd0mAj7DUmwndaiSHUT+schD5TeAI8ph6hFxR5bg87MERujFvIf29VdlgxTIyOhI6JZiA4W7S+wOt5uD1hAJZnI7R0xQgEjLAPJXb+dqgaIV8Q4V5ItjEvJXIYXIbBCpODvEVvsPj/W1zZrZKIYoJsr0QJWDZI9lhTvMr1DnbUSYDe9dIUcaFrCormPMKvZW22e64pECC7j6o6+uZ8Z3q1IsmPYgPNOftOMGCmGZ6CTmddnMahgbMKyd3j4G3q0mUlNpTPVDH/OfRZhJPY1ikApx15RCXfBrzDp6EkubKZ4MzPXXTEl7NXQLVNP0SbhZmtwNpFDLSEukloc94f9cfeQERj74q1v0qavtvB39AYBoSENwNtBeQElWJi07wXyEvNucY447E64kok3ACOi6WjQtyZ/tPqtWA71ZlydavJusB5qaeI+IVOi3KaMorEFxUfhpCV9WQbcRstbloMGoabZjNzQx3wZyz1d4WIeXQ7+DI9qHD7rR2DzZw3B0QmQcSJKrxM5YXTJCx8EmKzQ1K81AmW60M6hzJhURlICE/w0ozmuStAED1vEqwTxTpkjTWHMlACrUCal5tE044AcTNVkgIaAXMpw4uxk68kudTXIWM6wcQozOxPEJSpMiZs07eWQlj+vIV1rCnhaVVTYXEntAeEbP52AB/3amx4okv3U=
   file:
   - m2repository.tar.gz
-  - m2repository_smarthome.tar.gz
   - distribution/target/eclipsesmarthome-incubation-0.8.0-SNAPSHOT-repo.zip
   - distribution/target/eclipsesmarthome-incubation-0.8.0-SNAPSHOT-designer-win.zip
   - distribution/target/eclipsesmarthome-incubation-0.8.0-SNAPSHOT-designer-win64.zip
