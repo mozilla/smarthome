@@ -1,5 +1,7 @@
+lannguage: ruby
 
 install:
+- rvm get head
 - wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 - tar xzf apache-maven-3.3.9-bin.tar.gz
 
@@ -15,8 +17,6 @@ addons:
   apt:
     packages:
     - swig
-
-sudo: required
 
 dist: trusty
 
@@ -37,7 +37,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: ElYrJFFGNHigzel0kGQ/jXzr4dGpJ3VJ9Kri7r9tHtJ7IK5ti7UYqkPfW6cze9/39xvn+X8bxc7pEpMmnEyAZvS5xo5NIp5jFdOOey+EvLOrKnN2WAJYOcrITsLLhb3AT/2iE8P0Qn3/DHgrCiixuLDXzw1jeYHO4IPxJZW3Ra7NHXwLwlJYvtMsHePr8Wp9lW0/QL8VMWfnnS6SppNFaW2VvKVIL4N7iqARxRZm/d28sIhuIzZRHfMnroDVf7LwKVV0caeunbDnsymyLDF06UtJfaNz/7F+Hf5KiZEIUyfSgLNit/2vAol8WcokZqNngAgRg224eniuKcRO7D6mbuMFljZg2ow8dY/Px/vRjYayPdm8A3SnC3He5IUg0a2QQObSUzOg8869wUCN+y6V0WHu0lMMTvrFOfrEJ2qY1deLtafuG4wN4ujeeq9xmIWUGIZdJMIcapO17Vn1XbCYZt5qqwvHs19y83seaPu4GvU36UyEGoO+Tm8ctLpWaCfZHqJaqJ8hlm1kAYwbsKqPD43ast5jR29uTL8VJUVOmuLKvt8UFg0VB2m5K8yBiKHeFsFS8oA4849JInohsfa9kB4MvVVajcD94kVYeUB4IOYIdRLs2bxh5O+MgGUhJ86/D6DDvohDhRyuxjGsEZ1W5GW77PxVpKu8JYtluVgPJXY=
+    secure: Hd0mAj7DUmwndaiSHUT+schD5TeAI8ph6hFxR5bg87MERujFvIf29VdlgxTIyOhI6JZiA4W7S+wOt5uD1hAJZnI7R0xQgEjLAPJXb+dqgaIV8Q4V5ItjEvJXIYXIbBCpODvEVvsPj/W1zZrZKIYoJsr0QJWDZI9lhTvMr1DnbUSYDe9dIUcaFrCormPMKvZW22e64pECC7j6o6+uZ8Z3q1IsmPYgPNOftOMGCmGZ6CTmddnMahgbMKyd3j4G3q0mUlNpTPVDH/OfRZhJPY1ikApx15RCXfBrzDp6EkubKZ4MzPXXTEl7NXQLVNP0SbhZmtwNpFDLSEukloc94f9cfeQERj74q1v0qavtvB39AYBoSENwNtBeQElWJi07wXyEvNucY447E64kok3ACOi6WjQtyZ/tPqtWA71ZlydavJusB5qaeI+IVOi3KaMorEFxUfhpCV9WQbcRstbloMGoabZjNzQx3wZyz1d4WIeXQ7+DI9qHD7rR2DzZw3B0QmQcSJKrxM5YXTJCx8EmKzQ1K81AmW60M6hzJhURlICE/w0ozmuStAED1vEqwTxTpkjTWHMlACrUCal5tE044AcTNVkgIaAXMpw4uxk68kudTXIWM6wcQozOxPEJSpMiZs07eWQlj+vIV1rCnhaVVTYXEntAeEbP52AB/3amx4okv3U=
   file:
   - m2repository.tar.gz
   - distribution/target/eclipsesmarthome-incubation-0.8.0-SNAPSHOT-repo.zip
@@ -49,5 +49,6 @@ deploy:
   skip_cleanup: true
   on:
     repo: mozilla/smarthome
-    branch: master
+    branch: vaani
     tags: true
+
