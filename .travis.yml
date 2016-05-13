@@ -18,6 +18,8 @@ addons:
     packages:
     - swig
 
+sudo: required
+
 dist: trusty
 
 before_cache:
@@ -51,4 +53,3 @@ deploy:
     repo: mozilla/smarthome
     branch: vaani
     tags: true
-
