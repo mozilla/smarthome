@@ -49,6 +49,6 @@ deploy:
   skip_cleanup: true
   on:
     repo: mozilla/smarthome
-    branch: vaani
+    branch: master
     tags: true
 
