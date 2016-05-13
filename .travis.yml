@@ -1,4 +1,4 @@
-lannguage: ruby
+lannguage: java
 
 install:
 - rvm get head
