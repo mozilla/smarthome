@@ -1,0 +1,40 @@
+language: java
+jdk: openjdk8
+sudo: required
+dist: trusty
+
+install:
+- wget http://www-us.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+- tar xzf apache-maven-3.3.9-bin.tar.gz
+- curl -s -L https://github.com/mozilla/smarthome/releases/latest | egrep -o /mozilla/smarthome/releases/download/.*/m2repository.tar.gz | wget --base=http://github.com/ -i -
+- tar xf m2repository.tar.gz -C $HOME/.m2/repository/
+
+before_script:
+- rm $HOME/.m2/settings.xml
+- export MAVEN_OPTS="-Dmaven.artifact.threads=3 -Xmx2469m -XX:MaxPermSize=512m"
+- export PROJECTS="--projects !bundles/automation/org.eclipse.smarthome.automation.module.timer.test/pom.xml,!extensions/voice/org.eclipse.smarthome.voice.mactts/pom.xml,!bundles/automation/org.eclipse.smarthome.automation.module.script.test/pom.xml"
+
+script:
+- MAVEN_SKIP_RC=true apache-maven-3.3.9/bin/mvn install -fae -B $PROJECTS 2>&1 | ./filter.py ; test ${PIPESTATUS[0]} -eq 0
+
+addons:
+  apt:
+    packages:
+    - swig
+
+before_deploy:
+- tar zcfv $TRAVIS_BUILD_DIR/m2repository.tar.gz -C $HOME/.m2/repository . 2>&1 | $TRAVIS_BUILD_DIR/filter.py
+
+deploy:
+  provider: releases
+  api_key:
+    secure: ImcXU1odiJ/ohcmfLmKBH7TPvzKF23ORhI2ZYXpy6TAONMovB8QmChaImfx2dffRn7kyKQUIPPpETGHuaKs1XPt/yLh/XgRICPEOSiavF5z0z7nXws+as1/HGwO6zWHwWKJI0gC/8mCBvLeLN4nnMWxeFwdJQ4QtgYwL2bOw1uM3FxQj55tdSrdPgAGBd8Vidga7VpMhuIXMULFI86kMJHNKyfGmGcXs7VuMsip1mU5SjHMzg9HTXxQLR0G3uW+CJc86Wfg3/EUxxnAWys4hPFFivDd1iYl9ZRWLtmtL4p1Uxjqvq/byCqjAkja6oDyub2vGNG5/q/knzNCUgP+gCWUyvAxdarXxkQy7BWHcJRpXDtgq/A2uqLwy0n0wR9114M0LyD5yaU8Y5zbFpkcyuxrhrp6zyFuzo6iRta+8+hvUr1aCt7NKzxSDaHwCsFuo3n0K7Bm5e9q1TwhIu3l+2bEiRQNAn1OAVUDstchWu4RbXim4rCKE8c3atL6kguAe2zks3jcNh7JeDJj8obJqaUR4k7gcWoTk8oH3Ycl8retnd3162O/baMR+Sf7mw8TgX/5VDIm3/lgtYKVkfLestbtRhvKHU2+02Vs9PgUmujzkvsRUbEyChtWhR05h0MujlvwoH7qxX8zyIGN+YY6uT/KFxy5bshtSoqZPkMLUa30=
+  file_glob: true
+  file:
+  - m2repository.tar.gz
+  - distribution/target/*.zip
+  skip_cleanup: true
+  on:
+    repo: mozilla/smarthome
+    branch: master
+    tags: true
