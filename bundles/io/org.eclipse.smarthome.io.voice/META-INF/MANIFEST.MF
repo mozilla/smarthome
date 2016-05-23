@@ -48,6 +48,8 @@ Import-Package: javax.sound.sampled,
  org.osgi.framework,
  org.slf4j
 Export-Package: org.eclipse.smarthome.io.voice.text,
+ org.eclipse.smarthome.io.voice.tts,
+ org.eclipse.smarthome.io.voice.stt,
  org.eclipse.smarthome.io.voice
 Service-Component: OSGI-INF/*.xml
 Bundle-Activator: org.eclipse.smarthome.io.voice.internal.VoiceActivator
