@@ -145,22 +145,22 @@ public class AudioFormat {
     	if(audioFormat == null) {
     		return false;
     	}
-        if ((null != getContainer()) && (getContainer() != audioFormat.getContainer())) {
+        if ((null != getContainer()) && (!getContainer().equals(audioFormat.getContainer()))) {
             return false;
         }
-        if ((null != getCodec()) && (getCodec() != audioFormat.getCodec())) {
+        if ((null != getCodec()) && (!getCodec().equals(audioFormat.getCodec()))) {
             return false;
         }
-        if ((null != isBigEndian()) && (isBigEndian() != audioFormat.isBigEndian())) {
+        if ((null != isBigEndian()) && (!isBigEndian().equals(audioFormat.isBigEndian()))) {
             return false;
         }
-        if ((null != getBitDepth()) && (getBitDepth() != audioFormat.getBitDepth())) {
+        if ((null != getBitDepth()) && (!getBitDepth().equals(audioFormat.getBitDepth()))) {
             return false;
         }
-        if ((null != getBitRate()) && (getBitRate() != audioFormat.getBitRate())) {
+        if ((null != getBitRate()) && (!getBitRate().equals(audioFormat.getBitRate()))) {
             return false;
         }
-        if ((null != getFrequency()) && (getFrequency() != audioFormat.getFrequency())) {
+        if ((null != getFrequency()) && (!getFrequency().equals(audioFormat.getFrequency()))) {
             return false;
         }
         return true;
@@ -170,22 +170,22 @@ public class AudioFormat {
     public boolean equals(Object obj) {
         if (obj instanceof AudioFormat) {
             AudioFormat format = (AudioFormat) obj;
-            if (format.getCodec() != getCodec()) {
+            if (!(null == getCodec() ? null == format.getCodec() : getCodec().equals(format.getCodec()))) {
                 return false;
             }
-            if (format.getContainer() != getContainer()) {
+            if (!(null == getContainer() ? null == format.getContainer() : getContainer().equals(format.getContainer()))) {
                 return false;
             }
-            if (format.isBigEndian() != isBigEndian()) {
+            if (!(null == isBigEndian() ? null == format.isBigEndian() : isBigEndian().equals(format.isBigEndian()))) {
                 return false;
             }
-            if (format.getBitDepth() != getBitDepth()) {
+            if (!(null == getBitDepth() ? null == format.getBitDepth() : getBitDepth().equals(format.getBitDepth()))) {
                 return false;
             }
-            if (format.getBitRate() != getBitRate()) {
+            if (!(null == getBitRate() ? null == format.getBitRate() : getBitRate().equals(format.getBitRate()))) {
                 return false;
             }
-            if (format.getFrequency() != getFrequency()) {
+            if (!(null == getFrequency() ? null == format.getFrequency() : getFrequency().equals(format.getFrequency()))) {
                 return false;
             }
             return true;
