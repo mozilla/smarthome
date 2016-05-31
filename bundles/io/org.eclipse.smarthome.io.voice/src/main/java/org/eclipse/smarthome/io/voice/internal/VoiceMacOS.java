@@ -80,7 +80,7 @@ public class VoiceMacOS implements Voice {
              int underscore = token.indexOf('_');
              if (-1 == underscore) {
                  // Check we're dealing with <Label>
-                 if ("en-scotland" != token) {
+                 if (!token.equals("en-scotland")) {
                      if (null == this.label) {
                          this.label = token;
                      } else {
