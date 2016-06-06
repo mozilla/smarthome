@@ -238,6 +238,9 @@
       <plugin>
         <groupId>${tycho-groupid}</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-Djava.library.path=${project.basedir}/lib</argLine>
+        </configuration>
       </plugin>
     </plugins>
 
@@ -252,5 +255,5 @@
     </pluginManagement>
 
   </build>
-  
+
 </project>

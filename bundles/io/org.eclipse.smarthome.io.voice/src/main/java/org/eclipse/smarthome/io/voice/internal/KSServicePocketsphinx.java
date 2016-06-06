@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.cmu.pocketsphinx.Config;
 import edu.cmu.pocketsphinx.Decoder;
-import edu.cmu.pocketsphinx.nar.NarSystem;
 
 /**
  * This is a Keywordspot service implementation using pocketsphinx.
@@ -40,7 +39,7 @@ import edu.cmu.pocketsphinx.nar.NarSystem;
 public class KSServicePocketsphinx implements KSService {
 
     static {
-        NarSystem.loadLibrary();
+        System.loadLibrary("pocketsphinx_jni");
     }
 
     private static final Logger logger = LoggerFactory.getLogger(KSServicePocketsphinx.class);
@@ -140,11 +139,12 @@ class KSServiceRunnable implements Runnable {
     public void run() {
 
         try {
-
             ResourceBundle psproperties = ResourceBundle.getBundle(PocketsphinxProperties, Locale.getDefault());
             String modelpath = psproperties.getString(MODELPATH);
-            String dictpath = modelpath + File.separator + "cmudict-en-us.dict";
-            modelpath = modelpath + File.separator + "en-us";
+            String tag = Locale.US.toLanguageTag().toLowerCase();
+            modelpath = modelpath + File.separator + tag;
+            String dictpath = modelpath + File.separator + "cmudict-" + tag + ".dict";
+            modelpath = modelpath + File.separator + tag;
 
             Config c = Decoder.defaultConfig();
             c.setString("-hmm", modelpath);
